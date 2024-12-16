@@ -1,133 +1,95 @@
-# Services API with Pagination
+# Frontend Pagination Implementation
 
-This API provides an endpoint to retrieve services from the database, with optional pagination functionality. By default, the API returns the first 6 services unless specific pagination parameters are provided.
+This document outlines the process of implementing a simple pagination system in a React component using `useState` for page management.
 
-## Base URL
+## Overview
 
-`https://your-server-url.com/`
+Pagination allows users to navigate through large sets of data by displaying a limited number of items per page. This example uses React's `useState` hook to manage the current page and a total number of pages, with buttons to navigate forward and backward.
 
-## Endpoint: `/services`
+## Code Breakdown
 
-### Method: `GET`
+### Pagination Logic
 
-### Description
-
-Fetches a list of services with optional pagination. You can control the number of services returned and specify the page to retrieve. If no pagination parameters are provided, the default response will include the first 6 services.
-
-### Query Parameters
-
-| Parameter | Type   | Required | Default | Description                                             |
-|-----------|--------|----------|---------|---------------------------------------------------------|
-| `page`    | Number | No       | 1       | The page number to fetch.                               |
-| `limit`   | Number | No       | 6       | The number of services per page. Use `0` to fetch all services (no limit). |
-
-### Example Requests
-
-1. **Get Paginated Services**  
-   This request fetches services on page 2 with a limit of 5 services per page:
-
-   ```bash
-   GET /services?page=2&limit=5
-   ```
-
-   **Response** (JSON):
-   ```json
-   [
-     {
-       "_id": "service_id_1",
-       "name": "Service 1",
-       "description": "Description of Service 1",
-       "price": 100,
-       "image": "https://example.com/image1.jpg"
-     },
-     {
-       "_id": "service_id_2",
-       "name": "Service 2",
-       "description": "Description of Service 2",
-       "price": 200,
-       "image": "https://example.com/image2.jpg"
-     }
-     // More services...
-   ]
-   ```
-
-2. **Get All Services**  
-   This request fetches all available services (no pagination):
-
-   ```bash
-   GET /services?limit=0
-   ```
-
-   **Response** (JSON):
-   ```json
-   [
-     {
-       "_id": "service_id_1",
-       "name": "Service 1",
-       "description": "Description of Service 1",
-       "price": 100,
-       "image": "https://example.com/image1.jpg"
-     },
-     {
-       "_id": "service_id_2",
-       "name": "Service 2",
-       "description": "Description of Service 2",
-       "price": 200,
-       "image": "https://example.com/image2.jpg"
-     }
-     // More services...
-   ]
-   ```
-
-### Code Example
-
-Here is the implementation of the `/services` endpoint:
+1. **State Management:**
+   - `currentPage`: Tracks the current page the user is on.
+   - `totalPage`: Total number of available pages (default: 10).
+   
+2. **Pagination Buttons:**
+   - Buttons for navigating to the previous and next pages.
+   - Direct page buttons to allow jumping to specific pages.
 
 ```js
-app.get('/services', async (req, res) => {
-  const page = parseInt(req.query.page) || 1; // Page number (default 1)
-  const limit = parseInt(req.query.limit) || 6; // Limit per page (default 6)
-  
-  const skip = (page - 1) * limit; // Calculate the number of documents to skip
-
-  const result = await serviceCollection
-    .find() // Fetch all services
-    .skip(skip) // Skip services based on page
-    .limit(limit) // Limit services per page
-    .toArray(); // Convert result to array
-  
-  res.send(result); // Return the services in response
-});
+const [currentPage, setCurrentPage] = useState(1);  // Page starts at 1
+const [totalPage, setTotalPage] = useState(10);     // Total number of pages
 ```
 
-### Error Handling
+### Pagination Component
 
-If an error occurs while fetching services, the server will respond with an error message:
+- **Previous Button:** Disabled when on the first page.
+- **Next Button:** Disabled when on the last page.
+- **Page Numbers:** Buttons for navigating to specific pages.
 
-- **Status**: `500 Internal Server Error`
-- **Response** (JSON):
-   ```json
-   {
-     "message": "Server Error",
-     "error": "Error description"
-   }
-   ```
+```jsx
+<div className="join my-10">
+  {/* Previous Button */}
+  <button
+    className={`${currentPage === 1 && 'btn-disabled'} join-item btn`}
+    onClick={() => setCurrentPage(currentPage - 1)}>
+    <GrPrevious />
+  </button>
+  
+  {/* Page Numbers */}
+  {
+    Array(totalPage).fill().map((_, index) =>
+      <input
+        key={index}
+        className="join-item btn btn-square"
+        type="radio"
+        name="options"
+        aria-label={index + 1}
+        checked={currentPage === index + 1}
+        onClick={() => setCurrentPage(index + 1)}
+      />
+    )
+  }
 
-## Running Locally
+  {/* Next Button */}
+  <button
+    className={`${currentPage === totalPage && 'btn-disabled'} join-item btn`}
+    onClick={() => setCurrentPage(currentPage + 1)}>
+    <GrNext />
+  </button>
+</div>
+```
 
-1. Clone this repository.
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Create a `.env` file with your MongoDB connection credentials:
-   ```bash
-   DB_USER=your_mongodb_user
-   DB_PASS=your_mongodb_password
-   ```
-4. Start the server:
-   ```bash
-   npm start
-   ```
+### Displaying Items for Each Page
 
-The API will run on the specified port (default: `process.env.PORT`).
+In the example, the code simulates displaying 9 items per page. The page is updated based on `currentPage` and `limit`.
+
+```js
+<section className="w-[1200px] grid grid-cols-3 gap-4 justify-between">
+  {Array(9).fill().map((_, index) => (
+    <article key={index} className="flex flex-col py-6">
+      {/* Service content */}
+    </article>
+  ))}
+</section>
+```
+
+## Dependencies
+
+Ensure the following packages are installed for icons and page navigation:
+
+```bash
+npm install react-icons react-helmet-async react-router-dom
+```
+
+- **React Icons:** Provides `GrNext`, `GrPrevious`, and other icons.
+- **React Helmet Async:** Used for managing document head.
+- **React Router DOM:** Handles routing, though it’s not used much in this example.
+
+## How It Works
+
+- The **currentPage** state is updated when a user clicks on a page number or navigates with next/previous buttons.
+- The page buttons are dynamically rendered based on the `totalPage` value.
+- **Pagination state** ensures the correct content is displayed for each page.
