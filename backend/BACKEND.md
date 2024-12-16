@@ -216,7 +216,7 @@ app.use(cors({
 4. Deploy:
 
     ```bash
-    vercel
+    vercel --prod
     ```
 
 5. Set environment variables in Vercel:
