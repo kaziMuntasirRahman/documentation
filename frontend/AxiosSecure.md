@@ -25,8 +25,6 @@ export default useAxiosSecure;
 ```javascript
 const axiosSecure = useAxiosSecure();
 
-const handleAddToCart = () => {
-  axiosSecure.post('/carts', { ...data })
+axiosSecure.post('/carts', { ...data })
     .then(res => console.log(res.data));
-};
 ```
