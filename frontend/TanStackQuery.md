@@ -8,17 +8,22 @@ With TanStack Query, we can perform many tasks like fetching, caching, and handl
 
   First, we have to install TanStack Query with the following command:
   ```bash
+  npm i @tanstack/react-query
+  ```
+
+2. **It is also a recommendation to install the tanstack eslint plugin**
+  ```bash
   npm i -D @tanstack/eslint-plugin-query
   ```
 
-2. **Create a Query Client**
+3. **Create a Query Client**
 
   In our `main.jsx` file, we will create a `queryClient`:
   ```javascript
   const queryClient = new QueryClient();
   ```
 
-3. **Wrap the Application with QueryClientProvider**
+4. **Wrap the Application with QueryClientProvider**
 
   After that, we will wrap the `<Root/>` or `<App/>` (whatever we have) with the `QueryClientProvider` with `client={queryClient}` just like `<AuthProvider>` or `<HelmetProvider>`:
   ```jsx
@@ -48,7 +53,7 @@ With TanStack Query, we can perform many tasks like fetching, caching, and handl
   );
   ```
 
-4. **Create a Hook to Fetch Data**
+5. **Create a Hook to Fetch Data**
 
   Suppose we create a `useCart` hook. First, we will use `useQuery()`, which will return data and many other things. Don't forget to explore them [here](https://tanstack.com/query/latest/docs/framework/react/quick-start). We have to use a `queryKey` for caching and many other things, and a `queryFunction` that will fetch the data. The function will return data, which will be stored in `data`. Finally, we can return any data we want from the hook.
 
@@ -76,7 +81,7 @@ With TanStack Query, we can perform many tasks like fetching, caching, and handl
   export default useCart;
   ```
 
-5. **Use the Hook in a Component**
+6. **Use the Hook in a Component**
 
   If we want to use it from another component, we just have to get the instance of the hook. For example, in `Navbar.jsx`:
   ```javascript
@@ -88,7 +93,7 @@ With TanStack Query, we can perform many tasks like fetching, caching, and handl
   };
   ```
 
-6. **Refetch Data on Update**
+7. **Refetch Data on Update**
 
   If we want to do something like adding a cart from the `Cart.jsx` component and have it immediately update in the `Navbar.jsx`, we just have to use `refetch()`.
 
