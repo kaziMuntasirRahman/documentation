@@ -27,15 +27,28 @@ npm run dev
 
 ### **2.1 Tailwind CSS Installation**
 ```bash
-npm install -D tailwindcss postcss autoprefixer
-npx tailwindcss init -p
+npm install tailwindcss @tailwindcss/vite
+```
+
+- Add the 'tailwindcss()' plugins inside `vite.config.js` file and import it:
+```js
+vite.config.ts
+import { reactRouter } from "@react-router/dev/vite";
+import { defineConfig } from "vite";
+import tsconfigPaths from "vite-tsconfig-paths";
+import tailwindcss from "@tailwindcss/vite";
+export default defineConfig({
+  plugins: [
+    tailwindcss(),
+    reactRouter(),
+    tsconfigPaths(),
+  ],
+});
 ```
 
 - Add the following imports in your `index.css` file:
 ```css
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@import "tailwindcss";
 ```
 
 - Update the `content` section in `tailwind.config.js`:
