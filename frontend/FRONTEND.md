@@ -51,14 +51,6 @@ export default defineConfig({
 @import "tailwindcss";
 ```
 
-- Update the `content` section in `tailwind.config.js`:
-```javascript
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
-```
-
 ### **2.2 Daisy UI Installation**
 ```bash
 npm i -D daisyui@latest
