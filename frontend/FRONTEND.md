@@ -51,12 +51,12 @@ export default defineConfig({
 @import "tailwindcss";
 ```
 
-### **2.2 Daisy UI Installation**
+### **2.2 DaisyUI Installation**
 ```bash
 npm i -D daisyui@latest
 ```
 
-- include Daisy UI in `index.css`:
+- include DaisyUI in `index.css`:
 ```css
 @plugin "daisyui";
 ```
