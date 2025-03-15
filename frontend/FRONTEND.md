@@ -56,39 +56,14 @@ export default defineConfig({
 npm i -D daisyui@latest
 ```
 
-- Update `tailwind.config.js` to include Daisy UI:
-```javascript
-/** @type {import('tailwindcss').Config} */
-export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
-  theme: {
-    extend: {
-      colors: {
-        primaryColor: '#ff3811'
-      }
-    },
-  },
-  plugins: [require("daisyui")],
-  daisyui: {
-    themes: ["light", "dark", "cupcake"],
-  }
-}
+- include Daisy UI in `index.css`:
+```css
+@plugin "daisyui";
 ```
 
 - In your `index.html` file, set the `data-theme='light'` attribute in the `<html>` tag:
 ```html
 <html lang="en" data-theme="light">
-```
-
-### **2.3 ESLint Configuration**
-- In your `.eslintrc.cjs` file, set the `node` environment property:
-```javascript
-  env: {
-    node: true, 
-  }
 ```
 
 ---

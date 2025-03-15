@@ -35,9 +35,10 @@ const AuthProvider = ({ children }) => {
       await updateProfile(auth.currentUser, { displayName: name, photoURL: "https://pics.craiyon.com/2023-11-26/oMNPpACzTtO5OVERUZwh3Q.webp" })
       return credentials.user;
     } catch (error) {
-      setLoading(false);
       console.log(error)
       console.log(error.message)
+    }finally{
+      setLoading(false)
     }
   }
 
