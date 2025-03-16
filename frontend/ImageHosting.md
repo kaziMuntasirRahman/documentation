@@ -1,16 +1,11 @@
 # Image Upload to imgbb using API
-
 This guide provides a step-by-step explanation on how to upload an image to the **imgbb** image hosting service using React and Axios. We will handle the image file input using the `useState` hook and manage the upload process with Axios.
 
 ## Prerequisites
-
 - **imgbb** API key (You can get it by signing up at [imgbb.com](https://imgbb.com))
 - Axios installed in your project (`npm install axios`)
 
 ## Steps to Follow
-
----
-
 1. **Get the imgbb API key:**
    To upload image to **imgbb**, you need to generate an API key. You will get the 32 digit API key from [api.imgbb.com/](https://api.imgbb.com/). Save the api key in the Environment Variable file.
 
