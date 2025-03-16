@@ -38,7 +38,7 @@ const [image, setImage] = useState(null)
 ```jsx
 const handleSubmit = async () => {
   const imgFile = { image: image }
-  const response = await axios.post(imgbb_hosting_url, imgFile, {
+  const response = await axios.post(img_hosting_url, imgFile, {
     headers: {
       'content-type': 'multipart/form-data'
     }
@@ -60,7 +60,7 @@ Full handleSubmit asynchronous function.
 ```jsx
 const handleSubmit = async () => {
   const imgFile = { image: image }
-  const response = await axios.post(imgbb_hosting_url, imgFile, {
+  const response = await axios.post(img_hosting_url, imgFile, {
     headers: {
       'content-type': 'multipart/form-data'
     }
