@@ -16,7 +16,7 @@ VITE_IMGBB_API_KEY=f8a1b2c3d4e5f67890123456789abcdef
 2. **Create Image Hosting URL**
 
 ```jsx
-const img_hosting_url = `https://api.imgbb.com/1/upload?key=${
+const url = `https://api.imgbb.com/1/upload?key=${
   import.meta.env.VITE_IMGBB_API_KEY
 }`
 ```
@@ -40,7 +40,7 @@ const [image, setImage] = useState(null)
 ```jsx
 const handleSubmit = async () => {
   const imgFile = { image: image }
-  const response = await axios.post(imgbb_hosting_url, imgFile, {
+  const response = await axios.post(url, imgFile, {
     headers: {
       'content-type': 'multipart/form-data'
     }
@@ -62,7 +62,7 @@ Full handleSubmit asynchronous function.
 ```jsx
 const handleSubmit = async () => {
   const imgFile = { image: image }
-  const response = await axios.post(imgbb_hosting_url, imgFile, {
+  const response = await axios.post(url, imgFile, {
     headers: {
       'content-type': 'multipart/form-data'
     }
