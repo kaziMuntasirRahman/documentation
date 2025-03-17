@@ -28,19 +28,26 @@ const AuthProvider = ({ children }) => {
     };
   }, []);  // Empty dependency array ensures this runs once when component mounts
 
-  const createUser = async (name, email, password) => {
+
+  const createUser = async (name, email, imgURL, password) => {
     try {
-      setLoading(true);
-      const credentials = await createUserWithEmailAndPassword(auth, email, password);
-      await updateProfile(auth.currentUser, { displayName: name, photoURL: "https://pics.craiyon.com/2023-11-26/oMNPpACzTtO5OVERUZwh3Q.webp" })
-      return credentials.user;
+      setLoading(true)
+      const response = await createUserWithEmailAndPassword(auth, email, password)
+      console.log(response.user)
+      await updateProfile(response.user, { displayName: name, photoURL: imgURL })
+        .then(() => { // updateProfile method doesn't return anything
+          console.log("Profile Updated.")
+        })
+        .catch(err => console.log(err))
+      return response.user;
     } catch (error) {
       console.log(error)
-      console.log(error.message)
-    }finally{
+      return error;
+    } finally {
       setLoading(false)
     }
   }
+
 
   const logIn = async (email, password) => {
     try {
