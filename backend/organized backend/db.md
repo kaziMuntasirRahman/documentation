@@ -4,15 +4,15 @@ This documentation helps to organize database client, database and collections s
 ---
 ## `6 steps` to organize database file
 
-1. **Create a db.js file under db folder**
+1. Create a `db.js` file under db folder
 
-2. **Import `MongoClient`, `ServerApiVersion` from `mongodb`. also require `dotenv`.**
+2. Import `MongoClient`, `ServerApiVersion` from `mongodb`. also require `dotenv`.
 ```js
 const { MongoClient, ServerApiVersion } = require('mongodb')
 require('dotenv').config()
 ```
 
-3. **Create url inside template string, using `DB_USER` and `DB_PASSWORD` from `.env` file**
+3. Create url inside template string, using `DB_USER` and `DB_PASSWORD` from `.env` file
 ```js
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@clustermuntasir.bwzlexy.mongodb.net/?retryWrites=true&w=majority&appName=clusterMuntasir`
 ```
@@ -43,6 +43,9 @@ const connectDB = async () => {
     }
   } catch (err) {
     console.log('Failed to connect to MongoDB: ', err)
+  }finally {
+    // Ensures that the client will close when you finish/error
+    await client.close();
   }
 }
 ```
@@ -80,6 +83,9 @@ const connectDB = async () => {
     }
   } catch (err) {
     console.log('Failed to connect to MongoDB: ', err)
+  }finally {
+    // Ensures that the client will close when you finish/error
+    await client.close();
   }
 }
 
