@@ -10,7 +10,7 @@ npm install react-simple-captcha
 ```
 
 ## How to Use
-Follow these steps to integrate React Simple Captcha in your React app:
+Follow these 4 steps to integrate React Simple Captcha in your React app:
 
 ### Step 1: Import Required Modules
 In your React component, import the required modules from `react-simple-captcha` and other necessary libraries. Below is an example:
@@ -59,14 +59,3 @@ Add the `LoadCanvasTemplate` component to display the captcha and an input field
   <SubmitButton name="Sign In" />
 </form>
 ```
-
-## Example Code
-Here is a complete example of a React component using React Simple Captcha:
-
-
-## Conclusion
-React Simple Captcha is an excellent tool for adding captcha functionality to your React applications. It is easy to set up and highly customizable for various use cases. With the steps provided, you can quickly integrate it into your project to enhance security and prevent bot submissions.
-
----
-**Documentation by Rayiys**
-

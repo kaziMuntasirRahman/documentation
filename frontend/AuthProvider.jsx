@@ -10,23 +10,25 @@ const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const serverURL = 'http://localhost:3000';
 
+
   useEffect(() => {
-    // Subscribe to the auth state change listener
+    setLoading(true); // Set loading true before setting the listener
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
-        setUser(currentUser);  // Set user if logged in
-        console.log(currentUser);
+        setUser(currentUser);
+        console.log('User is present as:', currentUser?.displayName);
       } else {
-        setUser(null);  // Set user to null if logged out
-        console.log('User is absent.');
+        setUser(null);
+        console.log("User is absent");
       }
-      setLoading(false);
+      setLoading(false); // Set loading false after auth check
     });
-    // Cleanup function to unsubscribe on component unmount
+  
     return () => {
-      unsubscribe();
+      unsubscribe(); // Clean up the listener when the component unmounts
     };
-  }, []);  // Empty dependency array ensures this runs once when component mounts
+  }, []); // Empty dependency array ensures this effect only runs once when the component mounts.
+  
 
 
   const createUser = async (name, email, imgURL, password) => {

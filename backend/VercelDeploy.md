@@ -4,10 +4,10 @@ This guide explains how to deploy your Express.js server on Vercel.
 
 ### Prerequisites
 
-- You have an Express.js server set up.
-- You have a Vercel account. [Sign up here](https://vercel.com/signup).
+- You should have an Express.js server set up.
+- You should have a Vercel account. [Sign up here](https://vercel.com/signup).
 
-### Steps for Deployment
+### 5 Steps for Deployment
 
 #### 1. Install Vercel CLI
 
