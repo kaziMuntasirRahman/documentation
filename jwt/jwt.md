@@ -13,7 +13,7 @@
 npm i jsonwebtoken
 ```
 
-### 2. `backend:` Require `jsonwebtoken` in your `index.js` file.
+### 2. `backend:` import `jsonwebtoken` in your `index.js` file.
 
 ```js
 const jwt = require('jsonwebtoken')
@@ -63,7 +63,13 @@ app.post('/jwt', async (req, res) => {
 axios.post('http://localhost:5000/jwt', { email: user.email })
 ```
 
-Server will send a token in response.
+Server will send a token in response like following:
+
+```js
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFmcmFhakBnbWFpbC5jb20iLCJpYXQiOjE3NDI2NTc5MjYsImV4cCI6MTc0Mjc0NDMyNn0.ic6oue8Tt9_t29dN-mrqd1nQj4g4nG3vZ6cV3aiK8sI"
+}
+```
 
 ### 6. `frontend:` After receiving the token, save it in `localStorage`. _(Though, local storage is not the option but we will do in this way this time.)_
 
@@ -193,7 +199,7 @@ We will verify the token in several steps.
 
 ```js
 if (!req.headers.authorization) {
-  return res.status(401).send({ message: 'Forbidden Access...' })
+  return res.status(403).send({ message: 'Forbidden Access...' })
 }
 ```
 
@@ -202,7 +208,7 @@ if (!req.headers.authorization) {
 ```js
 const token = req.headers.authorization.split(' ')[1]
 if (!token) {
-  return res.status(401).send({ message: 'Bad Request!!! no token is served' })
+  return res.status(403).send({ message: 'Forbidden Access...' })
 }
 ```
 
@@ -211,7 +217,7 @@ if (!token) {
 ```js
 jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (error, decoded) => {
   if (error) {
-    return res.status(403).send({ message: 'Bad Request!!! error token' })
+    return res.status(401).send({ message: 'Bad Request...' })
   }
 })
 ```
@@ -220,15 +226,15 @@ jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (error, decoded) => {
 
 ```js
 if (!req.headers.authorization) {
-  return res.status(401).send({ message: 'Forbidden Access...' })
+    return res.status(403).send({ message: 'Forbidden Access...' })
 }
 const token = req.headers.authorization.split(' ')[1]
 if (!token) {
-  return res.status(401).send({ message: 'Bad Request!!! no token is served' })
+    return res.status(403).send({ message: 'Forbidden Access...' })
 }
 jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (error, decoded) => {
   if (error) {
-    return res.status(403).send({ message: 'Bad Request!!! error token' })
+      return res.status(401).send({ message: 'Bad Request...' })
   }
   req.decoded = decoded
 })
@@ -245,24 +251,23 @@ proceed to response..
 - create verifyToken middleware and pass with `next()` if token successfully verified.
 
 ```js
+const jwt = require('jsonwebtoken')
+
 const verifyToken = (req, res, next) => {
   if (!req.headers.authorization) {
-    return res.status(401).send({ message: 'Forbidden Access...' })
+    return res.status(403).send({ message: 'Forbidden Access...' })
   }
   const token = req.headers.authorization.split(' ')[1]
   if (!token) {
-    return res
-      .status(401)
-      .send({ message: 'Bad Request!!! no token is served' })
-  } else {
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (error, decoded) => {
-      if (error) {
-        return res.status(403).send({ message: 'Bad Request!!! error token' })
-      }
-      req.decodedData = decoded
-      next()
-    })
+    return res.status(403).send({ message: 'Forbidden Access...' })
   }
+  jwt.verify(token, process.env.JWT_SECRET, (error, decoded) => {
+    if (error) {
+      return res.status(401).send({ message: 'Bad Request...' })
+    }
+    req.decoded = decoded
+    next()
+  })
 }
 ```
 
@@ -283,72 +288,79 @@ app.delete('/users/:id', verifyToken, async (req, res) => {
 # Advanced jwt part
 
 ### 12. Verify Admin middleware
+
 - use verify admin after verifying token
 - get decoded data from `req.decoded`, which was set inside `verifyToken` middleware
 - get email from `req.decoded.email`
 - check role of the user against the email address
 - if user role is admin, proceed to next. or reject request from here.
+
 ```js
+const connectDB = require('../db/mongo_client')
+
 const verifyAdmin = async (req, res, next) => {
-  console.log('verifyAdmin middleware is called...')
-  const email = req.decoded.email
-  const query = { email: email }
-  const user = await userCollection.findOne(query)
-  const isAdmin = user?.role === 'admin'
-  if (!isAdmin) {
-    return res.status(403).send({ message: 'forbidden access' })
+  const { email } = req.decoded
+  try {
+    const { userCollection } = await connectDB()
+    const user = await userCollection.findOne({ email: email })
+    if (!user) {
+      return res.status(401).send({ message: 'Unauthorized...' })
+    }
+    const isAdmin = user.status === 'admin'
+    if (!isAdmin) {
+      return res.status(403).send({ message: 'Forbidden' })
+    }
+    next()
+  } catch (err) {
+    return res.status(500).send({ message: 'Server Error' })
+  } finally {
+    console.log('....verifyAdmin....')
   }
-  next()
 }
+
+module.exports = verifyAdmin
 ```
+
 ### 13. axiosSecure instance to handle corrupt token, or invalid request
+
 ```js
 import axios from "axios";
 import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../providers/AuthProvider";
 
 const axiosSecure = axios.create({
   baseURL: 'http://localhost:5000/',
-  timeout: 5000
+  // baseURL: 'https://tech-hunt-server-blond.vercel.app/',
 })
 
 const useAxiosSecure = () => {
-  const navigate = useNavigate();
-  const { logOut } = useContext(AuthContext);
+  const { logOut } = useContext(AuthContext)
 
-  //*****/ This request interceptor runs before each request is sent.
-  axiosSecure.interceptors.request.use(
-    (config) => {
-      const token = localStorage.getItem('access-token');
-      // console.log('request stopped by interceptor...');
-      config.headers.authorization = `bearer ${token}`;
-      // config.headers= { authorization: `bearer ${localStorage.getItem('access-token')}` };
-      // console.log("config", config)
-      return config;
-    },
-    (error) => {
-      // do something with request error
-      return Promise.reject(error)
-    })
+  axiosSecure.interceptors.request.use(config => {
+    const token = localStorage.getItem('jwt_token')
+    config.headers.Authorization = `bearer ${token}`
+    // console.log("config",config)
+    return config;
+  })
 
   //*****/ This response interceptor runs after each response is received from the server.
   axiosSecure.interceptors.response.use(
     (response) => {
-      return response
+      return response;
     },
     async (error) => {
-      const status = error.response.status;
-      console.log("Error code in the interceptor: ", status);
-      // intercepts 401 and 403 status
+      const status = error.response?.status;
       if (status === 401 || status === 403) {
+        console.log("Error code in the interceptor: ", status);
         await logOut();
-        navigate('/login');
+        window.location.href = '/'; 
       }
-      return Promise.reject(error)
-    })
+      return Promise.reject(error);
+    }
+  );
 
-  return axiosSecure;
-}
+  return (axiosSecure);
+};
+
 export default useAxiosSecure;
 ```
