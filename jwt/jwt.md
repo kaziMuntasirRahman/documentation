@@ -49,8 +49,7 @@ JWT_SECRET=<Your 64-byte Hex Secret>
 ```js
 app.post('/jwt', async (req, res) => {
   const user = req.body
-  console.log(user)
-  const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '1h' })
+  const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '7d' })
   return res.send({ token })
 })
 ```

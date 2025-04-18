@@ -32,7 +32,7 @@ npm install tailwindcss @tailwindcss/vite
 
 - Add the 'tailwindcss()' plugins inside `vite.config.js` file and import it:
 ```js
-vite.config.ts
+// vite.config.ts
 import { reactRouter } from "@react-router/dev/vite";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
